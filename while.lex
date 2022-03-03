@@ -13,7 +13,7 @@ val eof = fn () => (Tokens.EOF(!pos, !pos))
 %header (functor whileLexFun (structure Tokens : while_TOKENS));
 identifier = [a-zA-Z][a-zA-Z0-9]*;
 number = [1-9][0-9]*;
-whiteSpace = [\ \t\n];
+whiteSpace = [\ \t\r\n];
 
 %%
 [+~]?{number}    =>      (col := !col + size(yytext); print("NUM " ^ yytext ^ "\n"); Tokens.NUM(List.foldl (fn (a,r) => ord(a) - ord(#"0") + 10*r) 0 (explode yytext), !pos, !pos));

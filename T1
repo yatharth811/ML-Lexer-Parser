@@ -1,4 +1,3 @@
-
 program good2 ::
 var A, B, C, D : int;
 var E : bool;
