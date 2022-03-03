@@ -8,7 +8,7 @@
 %term 
   NEGATE | TERM | DCOLON | COLON | SET | COMMA | LBRACE | RBRACE | LPAREN | RPAREN | PLUS | MINUS | TIMES | DIV | MOD | PROG | VAR | INT | BOOL | IF | THEN | ENDIF | ELSE | WHILE | DO | ENDWH | TT | FF | NOT | AND | OR | NEQ | LT | LEQ | EQ | GT | GEQ | ID of string | NUM of int | EOF
 
-%nonterm START of AST.PROG | BLK of AST.BLK | DEC of AST.DEC | CMDSEQ of AST.CMDSEQ | TYPE of AST.TYP | VARLIST of AST.IDSEQ | EXP of AST.EXP | CMDWRAP of AST.CMDSEQ | DECSEQ of AST.DECSEQ
+%nonterm START of AST.PROG | BLK of AST.BLK | DEC of AST.DEC | CMDSEQ of AST.CMDSEQ | TYPE of AST.TYP | VARLIST of AST.IDSEQ | EXP of AST.EXP | CMDWRAP of AST.CMDWRAP | DECWRAP of AST.DECWRAP | DECSEQ of AST.DECSEQ
 
 %noshift EOF
 %eop EOF
@@ -35,18 +35,19 @@ START: PROG ID DCOLON BLK                   (AST.PROG(ID, BLK))
 
 BLK: DECSEQ CMDSEQ                          (AST.BLK(DECSEQ, CMDSEQ))
 
-DECSEQ: (*epsilon*)                         ([]) 
-    | DEC DECSEQ                            (AST.decAdd(DEC, DECSEQ))
+DECSEQ: DECWRAP                             (AST.DECSEQ(DECWRAP))
+DECWRAP: (*epsilon*)                        ([]) 
+    | DEC DECWRAP                           (AST.decAdd(DEC, DECWRAP))
 
 DEC: VAR VARLIST COLON TYPE TERM            (AST.DEC(VARLIST, TYPE))
 
-VARLIST: ID                                 ([ID]) 
-    | ID COMMA VARLIST                      (AST.idAdd(ID, VARLIST)) 
+VARLIST: ID                                 ([AST.VAR(ID)]) 
+    | ID COMMA VARLIST                      (AST.idAdd(AST.VAR(ID), VARLIST)) 
 
 TYPE: INT                                   (AST.INT)
     | BOOL                                  (AST.BOOL)
 
-CMDSEQ: LBRACE CMDWRAP RBRACE               (CMDWRAP)
+CMDSEQ: LBRACE CMDWRAP RBRACE               (AST.CMDSEQ(CMDWRAP))
 CMDWRAP: (*epsilon*)                        ([]) 
     | EXP TERM CMDWRAP                      (AST.cmdAdd(EXP, CMDWRAP))
 
@@ -71,5 +72,5 @@ EXP: ID SET EXP                             (AST.SET(ID, EXP))
     | EXP AND EXP                           (AST.AND(EXP1, EXP2))
     | TT                                    (AST.TT)
     | FF                                    (AST.FF)
-    | ID                                    (AST.VARIABLE(ID))
+    | ID                                    (AST.VAREXP(ID))
     | NOT EXP                               (AST.NOT(EXP))
