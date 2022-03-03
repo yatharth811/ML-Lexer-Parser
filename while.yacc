@@ -13,15 +13,18 @@
 %noshift EOF
 %eop EOF
 %pos int
- 
-%left LT LEQ EQ GT GEQ NEQ
-%left TIMES DIV MOD PLUS MINUS
-%right IF THEN ELSE WHILE DO
-%nonassoc ENDIF ENDWH
-%left OR AND
-%right NOT 
-%right NEGATE
-%right SET
+%right DO
+%nonassoc THEN SET NUM
+%nonassoc ELSE
+%left COMMA
+%left OR
+%left AND
+%left EQ NEQ
+%left LT GT LEQ GEQ
+%left PLUS MINUS
+%left TIMES DIV MOD
+%right NEGATE NOT
+
 %start START
 %verbose
 
@@ -32,20 +35,20 @@ START: PROG ID DCOLON BLK                   (AST.PROG(ID, BLK))
 
 BLK: DECSEQ CMDSEQ                          (AST.BLK(DECSEQ, CMDSEQ))
 
-DECSEQ: (*epsilon*)                         (AST.DECS) 
-    | DEC DECSEQ                            (AST.DECSEQ(DEC, DECSEQ))
+DECSEQ: (*epsilon*)                         ([]) 
+    | DEC DECSEQ                            (AST.decAdd(DEC, DECSEQ))
 
 DEC: VAR VARLIST COLON TYPE TERM            (AST.DEC(VARLIST, TYPE))
 
-VARLIST: ID                                 (AST.IDS(ID)) 
-    | ID COMMA VARLIST                      (AST.IDSEQ(ID, VARLIST)) 
+VARLIST: ID                                 ([ID]) 
+    | ID COMMA VARLIST                      (AST.idAdd(ID, VARLIST)) 
 
 TYPE: INT                                   (AST.INT)
     | BOOL                                  (AST.BOOL)
 
 CMDSEQ: LBRACE CMDWRAP RBRACE               (CMDWRAP)
-CMDWRAP: (*epsilon*)                        (AST.CMDS) 
-    | EXP TERM CMDWRAP                      (AST.CMDSEQ(EXP, CMDWRAP))
+CMDWRAP: (*epsilon*)                        ([]) 
+    | EXP TERM CMDWRAP                      (AST.cmdAdd(EXP, CMDWRAP))
 
 EXP: ID SET EXP                             (AST.SET(ID, EXP))
     | IF EXP THEN CMDSEQ ELSE CMDSEQ ENDIF  (AST.ITE(EXP, CMDSEQ1, CMDSEQ2))
@@ -68,5 +71,5 @@ EXP: ID SET EXP                             (AST.SET(ID, EXP))
     | EXP AND EXP                           (AST.AND(EXP1, EXP2))
     | TT                                    (AST.TT)
     | FF                                    (AST.FF)
-    | ID                                    (AST.ID)
+    | ID                                    (AST.VARIABLE(ID))
     | NOT EXP                               (AST.NOT(EXP))

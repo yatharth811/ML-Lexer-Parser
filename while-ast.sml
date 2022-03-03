@@ -1,13 +1,13 @@
 structure AST = struct
-	type ID = string
+	(* type ID = string *)
     datatype TYP = INT | BOOL
-    datatype IDSEQ = IDS of ID | IDSEQ of ID * IDSEQ
+    type IDSEQ = string list
     datatype DEC = DEC of IDSEQ * TYP
-    datatype DECSEQ = DECS | DECSEQ of DEC * DECSEQ
+    type DECSEQ = DEC list
     datatype EXP = NUM of int
-        | SET of ID * EXP
-		| ITE of EXP * CMDSEQ * CMDSEQ
-		| WH of EXP * CMDSEQ
+        | SET of string * EXP
+		| ITE of EXP * EXP list * EXP list
+		| WH of EXP * EXP list
         | PLUS of EXP * EXP
         | MINUS of EXP * EXP
         | TIMES of EXP * EXP
@@ -25,10 +25,13 @@ structure AST = struct
 		| NOT of EXP
         | TT
         | FF
-        | ID     
-    and CMDSEQ = CMDS | CMDSEQ of EXP * CMDSEQ
+        | VARIABLE of string 
+    type CMDSEQ = EXP list
     datatype BLK = BLK of DECSEQ * CMDSEQ
-    datatype PROG = PROG of ID * BLK
+    datatype PROG = PROG of string * BLK
+    fun decAdd(dec : DEC, seq : DECSEQ ) = dec :: seq
+    fun idAdd(hm: string, seq: IDSEQ ) = hm :: seq
+    fun cmdAdd(ex : EXP, seq: CMDSEQ) = ex :: seq 
 end
 
 	(* datatype value = IntVal of int | BoolVal of bool | FunVal of id * typ * typ * EXP *)
@@ -62,5 +65,16 @@ end
 
 (*
 %nonterm START of AST.exp | BLK of AST.blk | DEC of AST.dec| CMDSEQ of AST.seq | TYPE of AST.typ | VARLIST of AST.seq | EXP of AST.exp | CMDWRAP of AST.seq | DECSEQ of AST.seq
+
+%left LT LEQ EQ GT GEQ NEQ
+%left MOD PLUS MINUS
+%left TIMES DIV
+%right IF THEN ELSE WHILE DO
+%nonassoc ENDIF ENDWH
+%left OR AND
+
+%right NOT 
+%right NEGATE
+%right SET
 
 *)
