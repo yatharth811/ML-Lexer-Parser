@@ -6,9 +6,9 @@
 %name while
 
 %term 
-  TILDE | TERM | DCOLON | COLON | SET | COMMA | LBRACE | RBRACE | LPAREN | RPAREN | PLUS | MINUS | TIMES | DIV | MOD | PROG | VAR | INT | BOOL | IF | THEN | ENDIF | ELSE | WHILE | DO | ENDWH | TT | FF | NOT | AND | OR | NEQ | LT | LEQ | EQ | GT | GEQ | ID of string | NUM of int | EOF
+  NEGATE | TERM | DCOLON | COLON | SET | COMMA | LBRACE | RBRACE | LPAREN | RPAREN | PLUS | MINUS | TIMES | DIV | MOD | PROG | VAR | INT | BOOL | IF | THEN | ENDIF | ELSE | WHILE | DO | ENDWH | TT | FF | NOT | AND | OR | NEQ | LT | LEQ | EQ | GT | GEQ | ID of string | NUM of int | EOF
 
-%nonterm START | BLK | DEC | CMDSEQ | TYPE | VARLIST | EXP | CMDWRAP
+%nonterm START of AST.PROG | BLK of AST.BLK | DEC of AST.DEC | CMDSEQ of AST.CMDSEQ | TYPE of AST.TYP | VARLIST of AST.IDSEQ | EXP of AST.EXP | CMDWRAP of AST.CMDSEQ | DECSEQ of AST.DECSEQ
 
 %noshift EOF
 %eop EOF
@@ -20,7 +20,7 @@
 %nonassoc ENDIF ENDWH
 %left OR AND
 %right NOT 
-%right TILDE
+%right NEGATE
 %right SET
 %start START
 %verbose
@@ -28,43 +28,45 @@
 
 %%
 
-START: PROG ID DCOLON BLK ()
+START: PROG ID DCOLON BLK                   (AST.PROG(ID, BLK))
 
-BLK: DEC CMDSEQ ()
+BLK: DECSEQ CMDSEQ                          (AST.BLK(DECSEQ, CMDSEQ))
 
-DEC: (*epsilon*) () 
-    | VAR VARLIST COLON TYPE TERM DEC ()
+DECSEQ: (*epsilon*)                         (AST.DECS) 
+    | DEC DECSEQ                            (AST.DECSEQ(DEC, DECSEQ))
 
-VARLIST: ID () 
-    | ID COMMA VARLIST () 
+DEC: VAR VARLIST COLON TYPE TERM            (AST.DEC(VARLIST, TYPE))
 
-TYPE: INT ()
-    | BOOL ()
+VARLIST: ID                                 (AST.IDS(ID)) 
+    | ID COMMA VARLIST                      (AST.IDSEQ(ID, VARLIST)) 
 
-CMDSEQ: LBRACE CMDWRAP RBRACE ()
-CMDWRAP: (*epsilon*) () 
-    | EXP TERM CMDWRAP ()
+TYPE: INT                                   (AST.INT)
+    | BOOL                                  (AST.BOOL)
 
-EXP: ID SET EXP ()
-    | IF EXP THEN CMDSEQ ELSE CMDSEQ ENDIF ()
-    | WHILE EXP DO CMDSEQ ENDWH ()
-    | EXP PLUS  EXP ()
-    | EXP MINUS EXP ()
-    | EXP TIMES EXP ()
-    | EXP DIV EXP ()
-    | EXP MOD EXP ()
-    | EXP LT EXP ()
-    | EXP LEQ EXP ()
-    | EXP EQ EXP ()
-    | EXP GT EXP ()
-    | EXP GEQ EXP ()
-    | EXP NEQ EXP () 
-    | NUM ()
-    | LPAREN EXP RPAREN ()
-    | TILDE EXP ()
-    | EXP OR EXP ()
-    | EXP AND EXP ()
-    | TT ()
-    | FF ()
-    | ID ()
-    | NOT EXP ()
+CMDSEQ: LBRACE CMDWRAP RBRACE               (CMDWRAP)
+CMDWRAP: (*epsilon*)                        (AST.CMDS) 
+    | EXP TERM CMDWRAP                      (AST.CMDSEQ(EXP, CMDWRAP))
+
+EXP: ID SET EXP                             (AST.SET(ID, EXP))
+    | IF EXP THEN CMDSEQ ELSE CMDSEQ ENDIF  (AST.ITE(EXP, CMDSEQ1, CMDSEQ2))
+    | WHILE EXP DO CMDSEQ ENDWH             (AST.WH(EXP, CMDSEQ))
+    | EXP PLUS  EXP                         (AST.PLUS(EXP1, EXP2))
+    | EXP MINUS EXP                         (AST.MINUS(EXP1, EXP2))
+    | EXP TIMES EXP                         (AST.TIMES(EXP1, EXP2))
+    | EXP DIV EXP                           (AST.DIV(EXP1, EXP2))
+    | EXP MOD EXP                           (AST.MOD(EXP1, EXP2))
+    | EXP LT EXP                            (AST.LT(EXP1, EXP2))
+    | EXP LEQ EXP                           (AST.LEQ(EXP1, EXP2))
+    | EXP EQ EXP                            (AST.EQ(EXP1, EXP2))
+    | EXP GT EXP                            (AST.GT(EXP1, EXP2))
+    | EXP GEQ EXP                           (AST.GEQ(EXP1, EXP2))
+    | EXP NEQ EXP                           (AST.NEQ(EXP1, EXP2)) 
+    | NUM                                   (AST.NUM(NUM))
+    | LPAREN EXP RPAREN                     (EXP)
+    | NEGATE EXP                            (AST.NEGATE(EXP))
+    | EXP OR EXP                            (AST.OR(EXP1, EXP2))
+    | EXP AND EXP                           (AST.AND(EXP1, EXP2))
+    | TT                                    (AST.TT)
+    | FF                                    (AST.FF)
+    | ID                                    (AST.ID)
+    | NOT EXP                               (AST.NOT(EXP))

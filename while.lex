@@ -13,12 +13,12 @@ val eof = fn () => (Tokens.EOF(!pos, !pos))
 %header (functor whileLexFun (structure Tokens : while_TOKENS));
 identifier = [a-zA-Z][a-zA-Z0-9]*;
 number = [1-9][0-9]*;
-whiteSpace = [\ \t\r\n];
+whiteSpace = [\ \t\r\n]+;
 
 %%
 [+~]?{number}    =>      (col := !col + size(yytext); print("NUM " ^ yytext ^ "\n"); Tokens.NUM(List.foldl (fn (a,r) => ord(a) - ord(#"0") + 10*r) 0 (explode yytext), !pos, !pos));
 
-"~"         =>      (col := !col + 1; print("TILDE " ^ yytext ^ "\n");  Tokens.TILDE(!pos, !pos));
+"~"         =>      (col := !col + 1; print("NEGATE " ^ yytext ^ "\n");  Tokens.NEGATE(!pos, !pos));
 ";"         =>      (col := !col + 1; print("TERM " ^ yytext ^ "\n");  Tokens.TERM(!pos, !pos));
 "::"        =>      (col := !col + 2; print("DCOLON " ^ yytext ^ "\n"); Tokens.DCOLON(!pos, !pos));
 ":"         =>      (col := !col + 1; print("COLON " ^ yytext ^ "\n"); Tokens.COLON(!pos, !pos));
@@ -63,5 +63,5 @@ whiteSpace = [\ \t\r\n];
 ">="        =>      (col := !col + 2; print("GEQ " ^ yytext ^ "\n");  Tokens.GEQ(!pos, !pos));
 
 {identifier}=>      (col := !col + size(yytext); print("ID " ^ yytext ^ "\n");  Tokens.ID(yytext, !pos, !pos));
-{whiteSpace} =>      (col := !col + 1; lex());
+{whiteSpace}=>     (col := !col + size yytext; lex());
 .           =>      (raise badCharacter; lex());

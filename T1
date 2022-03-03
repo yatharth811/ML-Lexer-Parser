@@ -1,7 +1,6 @@
 program good2 ::
 var A, B, C, D : int;
 var E : bool;
-
 {
     A := A*B+C/D%A;
     B := A-B-C-D;
