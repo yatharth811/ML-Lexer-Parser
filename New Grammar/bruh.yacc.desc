@@ -1,0 +1,1064 @@
+1 reduce/reduce conflict
+
+error:  state 31: reduce/reduce conflict between rule 35 and rule 26 on TERM
+
+state 0:
+
+	START : . PROG ID DCOLON BLK 
+
+	PROG	shift 1
+
+	START	goto 84
+
+	.	error
+
+
+state 1:
+
+	START : PROG . ID DCOLON BLK 
+
+	ID	shift 2
+
+
+	.	error
+
+
+state 2:
+
+	START : PROG ID . DCOLON BLK 
+
+	DCOLON	shift 3
+
+
+	.	error
+
+
+state 3:
+
+	START : PROG ID DCOLON . BLK 
+
+	VAR	shift 8
+
+	BLK	goto 7
+	DEC	goto 6
+	DECWRAP	goto 5
+	DECSEQ	goto 4
+
+	.	reduce by rule 3
+
+
+state 4:
+
+	BLK : DECSEQ . CMDSEQ 
+
+	LBRACE	shift 10
+
+	CMDSEQ	goto 9
+
+	.	error
+
+
+state 5:
+
+	DECSEQ : DECWRAP .  (reduce by rule 2)
+
+
+
+	.	reduce by rule 2
+
+
+state 6:
+
+	DECWRAP : DEC . DECWRAP 
+
+	VAR	shift 8
+
+	DEC	goto 6
+	DECWRAP	goto 11
+
+	.	reduce by rule 3
+
+
+state 7:
+
+	START : PROG ID DCOLON BLK .  (reduce by rule 0)
+
+
+
+	.	reduce by rule 0
+
+
+state 8:
+
+	DEC : VAR . VARLIST COLON TYPE TERM 
+
+	ID	shift 13
+
+	VARLIST	goto 12
+
+	.	error
+
+
+state 9:
+
+	BLK : DECSEQ CMDSEQ .  (reduce by rule 1)
+
+
+
+	.	reduce by rule 1
+
+
+state 10:
+
+	CMDSEQ : LBRACE . CMDWRAP RBRACE 
+
+	IF	shift 18
+	WHILE	shift 17
+	ID	shift 16
+
+	CMDWRAP	goto 15
+	CMD	goto 14
+
+	.	reduce by rule 11
+
+
+state 11:
+
+	DECWRAP : DEC DECWRAP .  (reduce by rule 4)
+
+
+
+	.	reduce by rule 4
+
+
+state 12:
+
+	DEC : VAR VARLIST . COLON TYPE TERM 
+
+	COLON	shift 19
+
+
+	.	error
+
+
+state 13:
+
+	VARLIST : ID .  (reduce by rule 6)
+	VARLIST : ID . COMMA VARLIST 
+
+	COMMA	shift 20
+
+
+	.	reduce by rule 6
+
+
+state 14:
+
+	CMDWRAP : CMD . TERM CMDWRAP 
+
+	TERM	shift 21
+
+
+	.	error
+
+
+state 15:
+
+	CMDSEQ : LBRACE CMDWRAP . RBRACE 
+
+	RBRACE	shift 22
+
+
+	.	error
+
+
+state 16:
+
+	CMD : ID . SET EXP 
+
+	SET	shift 23
+
+
+	.	error
+
+
+state 17:
+
+	CMD : WHILE . BEXP DO CMDSEQ ENDWH 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	TT	shift 33
+	FF	shift 32
+	ID	shift 31
+	NUM	shift 30
+
+	ITERM	goto 29
+	IEXP	goto 28
+	IFACTOR	goto 27
+	BEXP	goto 26
+	BTERM	goto 25
+	BFACTOR	goto 24
+
+	.	error
+
+
+state 18:
+
+	CMD : IF . BEXP THEN CMDSEQ ELSE CMDSEQ ENDIF 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	TT	shift 33
+	FF	shift 32
+	ID	shift 31
+	NUM	shift 30
+
+	ITERM	goto 29
+	IEXP	goto 28
+	IFACTOR	goto 27
+	BEXP	goto 36
+	BTERM	goto 25
+	BFACTOR	goto 24
+
+	.	error
+
+
+state 19:
+
+	DEC : VAR VARLIST COLON . TYPE TERM 
+
+	INT	shift 39
+	BOOL	shift 38
+
+	TYPE	goto 37
+
+	.	error
+
+
+state 20:
+
+	VARLIST : ID COMMA . VARLIST 
+
+	ID	shift 13
+
+	VARLIST	goto 40
+
+	.	error
+
+
+state 21:
+
+	CMDWRAP : CMD TERM . CMDWRAP 
+
+	IF	shift 18
+	WHILE	shift 17
+	ID	shift 16
+
+	CMDWRAP	goto 41
+	CMD	goto 14
+
+	.	reduce by rule 11
+
+
+state 22:
+
+	CMDSEQ : LBRACE CMDWRAP RBRACE .  (reduce by rule 10)
+
+
+
+	.	reduce by rule 10
+
+
+state 23:
+
+	CMD : ID SET . EXP 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	TT	shift 33
+	FF	shift 32
+	ID	shift 31
+	NUM	shift 30
+
+	EXP	goto 44
+	ITERM	goto 29
+	IEXP	goto 43
+	IFACTOR	goto 27
+	BEXP	goto 42
+	BTERM	goto 25
+	BFACTOR	goto 24
+
+	.	error
+
+
+state 24:
+
+	BTERM : BFACTOR .  (reduce by rule 32)
+
+
+
+	.	reduce by rule 32
+
+
+state 25:
+
+	BEXP : BTERM .  (reduce by rule 30)
+	BTERM : BTERM . AND BFACTOR 
+
+	AND	shift 45
+
+
+	.	reduce by rule 30
+
+
+state 26:
+
+	BEXP : BEXP . OR BTERM 
+	CMD : WHILE BEXP . DO CMDSEQ ENDWH 
+
+	DO	shift 47
+	OR	shift 46
+
+
+	.	error
+
+
+state 27:
+
+	ITERM : IFACTOR .  (reduce by rule 24)
+
+
+
+	.	reduce by rule 24
+
+
+state 28:
+
+	IEXP : IEXP . PLUS ITERM 
+	IEXP : IEXP . MINUS ITERM 
+	BFACTOR : IEXP . LT IEXP 
+	BFACTOR : IEXP . LEQ IEXP 
+	BFACTOR : IEXP . EQ IEXP 
+	BFACTOR : IEXP . GT IEXP 
+	BFACTOR : IEXP . GEQ IEXP 
+	BFACTOR : IEXP . NEQ IEXP 
+
+	PLUS	shift 55
+	MINUS	shift 54
+	NEQ	shift 53
+	LT	shift 52
+	LEQ	shift 51
+	EQ	shift 50
+	GT	shift 49
+	GEQ	shift 48
+
+
+	.	error
+
+
+state 29:
+
+	ITERM : ITERM . TIMES IFACTOR 
+	ITERM : ITERM . DIV IFACTOR 
+	ITERM : ITERM . MOD IFACTOR 
+	IEXP : ITERM .  (reduce by rule 20)
+
+	TIMES	shift 58
+	DIV	shift 57
+	MOD	shift 56
+
+
+	.	reduce by rule 20
+
+
+state 30:
+
+	IFACTOR : NUM .  (reduce by rule 25)
+
+
+
+	.	reduce by rule 25
+
+error:  state 31: reduce/reduce conflict between rule 35 and rule 26 on TERM
+
+state 31:
+
+	IFACTOR : ID .  (reduce by rule 26)
+	BFACTOR : ID .  (reduce by rule 35)
+
+	TERM	reduce by rule 26
+	PLUS	reduce by rule 26
+	MINUS	reduce by rule 26
+	TIMES	reduce by rule 26
+	DIV	reduce by rule 26
+	MOD	reduce by rule 26
+	THEN	reduce by rule 35
+	DO	reduce by rule 35
+	AND	reduce by rule 35
+	OR	reduce by rule 35
+	NEQ	reduce by rule 26
+	LT	reduce by rule 26
+	LEQ	reduce by rule 26
+	EQ	reduce by rule 26
+	GT	reduce by rule 26
+	GEQ	reduce by rule 26
+
+
+	.	error
+
+
+state 32:
+
+	BFACTOR : FF .  (reduce by rule 34)
+
+
+
+	.	reduce by rule 34
+
+
+state 33:
+
+	BFACTOR : TT .  (reduce by rule 33)
+
+
+
+	.	reduce by rule 33
+
+
+state 34:
+
+	IFACTOR : LPAREN . IEXP RPAREN 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	ITERM	goto 29
+	IEXP	goto 59
+	IFACTOR	goto 27
+
+	.	error
+
+
+state 35:
+
+	IFACTOR : NEGATE . IFACTOR 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	IFACTOR	goto 61
+
+	.	error
+
+
+state 36:
+
+	BEXP : BEXP . OR BTERM 
+	CMD : IF BEXP . THEN CMDSEQ ELSE CMDSEQ ENDIF 
+
+	THEN	shift 62
+	OR	shift 46
+
+
+	.	error
+
+
+state 37:
+
+	DEC : VAR VARLIST COLON TYPE . TERM 
+
+	TERM	shift 63
+
+
+	.	error
+
+
+state 38:
+
+	TYPE : BOOL .  (reduce by rule 9)
+
+
+
+	.	reduce by rule 9
+
+
+state 39:
+
+	TYPE : INT .  (reduce by rule 8)
+
+
+
+	.	reduce by rule 8
+
+
+state 40:
+
+	VARLIST : ID COMMA VARLIST .  (reduce by rule 7)
+
+
+
+	.	reduce by rule 7
+
+
+state 41:
+
+	CMDWRAP : CMD TERM CMDWRAP .  (reduce by rule 12)
+
+
+
+	.	reduce by rule 12
+
+
+state 42:
+
+	EXP : BEXP .  (reduce by rule 17)
+	BEXP : BEXP . OR BTERM 
+
+	OR	shift 46
+
+
+	.	reduce by rule 17
+
+
+state 43:
+
+	EXP : IEXP .  (reduce by rule 16)
+	IEXP : IEXP . PLUS ITERM 
+	IEXP : IEXP . MINUS ITERM 
+	BFACTOR : IEXP . LT IEXP 
+	BFACTOR : IEXP . LEQ IEXP 
+	BFACTOR : IEXP . EQ IEXP 
+	BFACTOR : IEXP . GT IEXP 
+	BFACTOR : IEXP . GEQ IEXP 
+	BFACTOR : IEXP . NEQ IEXP 
+
+	PLUS	shift 55
+	MINUS	shift 54
+	NEQ	shift 53
+	LT	shift 52
+	LEQ	shift 51
+	EQ	shift 50
+	GT	shift 49
+	GEQ	shift 48
+
+
+	.	reduce by rule 16
+
+
+state 44:
+
+	CMD : ID SET EXP .  (reduce by rule 13)
+
+
+
+	.	reduce by rule 13
+
+
+state 45:
+
+	BTERM : BTERM AND . BFACTOR 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	TT	shift 33
+	FF	shift 32
+	ID	shift 31
+	NUM	shift 30
+
+	ITERM	goto 29
+	IEXP	goto 28
+	IFACTOR	goto 27
+	BFACTOR	goto 64
+
+	.	error
+
+
+state 46:
+
+	BEXP : BEXP OR . BTERM 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	TT	shift 33
+	FF	shift 32
+	ID	shift 31
+	NUM	shift 30
+
+	ITERM	goto 29
+	IEXP	goto 28
+	IFACTOR	goto 27
+	BTERM	goto 65
+	BFACTOR	goto 24
+
+	.	error
+
+
+state 47:
+
+	CMD : WHILE BEXP DO . CMDSEQ ENDWH 
+
+	LBRACE	shift 10
+
+	CMDSEQ	goto 66
+
+	.	error
+
+
+state 48:
+
+	BFACTOR : IEXP GEQ . IEXP 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	ITERM	goto 29
+	IEXP	goto 67
+	IFACTOR	goto 27
+
+	.	error
+
+
+state 49:
+
+	BFACTOR : IEXP GT . IEXP 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	ITERM	goto 29
+	IEXP	goto 68
+	IFACTOR	goto 27
+
+	.	error
+
+
+state 50:
+
+	BFACTOR : IEXP EQ . IEXP 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	ITERM	goto 29
+	IEXP	goto 69
+	IFACTOR	goto 27
+
+	.	error
+
+
+state 51:
+
+	BFACTOR : IEXP LEQ . IEXP 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	ITERM	goto 29
+	IEXP	goto 70
+	IFACTOR	goto 27
+
+	.	error
+
+
+state 52:
+
+	BFACTOR : IEXP LT . IEXP 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	ITERM	goto 29
+	IEXP	goto 71
+	IFACTOR	goto 27
+
+	.	error
+
+
+state 53:
+
+	BFACTOR : IEXP NEQ . IEXP 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	ITERM	goto 29
+	IEXP	goto 72
+	IFACTOR	goto 27
+
+	.	error
+
+
+state 54:
+
+	IEXP : IEXP MINUS . ITERM 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	ITERM	goto 73
+	IFACTOR	goto 27
+
+	.	error
+
+
+state 55:
+
+	IEXP : IEXP PLUS . ITERM 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	ITERM	goto 74
+	IFACTOR	goto 27
+
+	.	error
+
+
+state 56:
+
+	ITERM : ITERM MOD . IFACTOR 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	IFACTOR	goto 75
+
+	.	error
+
+
+state 57:
+
+	ITERM : ITERM DIV . IFACTOR 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	IFACTOR	goto 76
+
+	.	error
+
+
+state 58:
+
+	ITERM : ITERM TIMES . IFACTOR 
+
+	NEGATE	shift 35
+	LPAREN	shift 34
+	ID	shift 60
+	NUM	shift 30
+
+	IFACTOR	goto 77
+
+	.	error
+
+
+state 59:
+
+	IEXP : IEXP . PLUS ITERM 
+	IEXP : IEXP . MINUS ITERM 
+	IFACTOR : LPAREN IEXP . RPAREN 
+
+	RPAREN	shift 78
+	PLUS	shift 55
+	MINUS	shift 54
+
+
+	.	error
+
+
+state 60:
+
+	IFACTOR : ID .  (reduce by rule 26)
+
+
+
+	.	reduce by rule 26
+
+
+state 61:
+
+	IFACTOR : NEGATE IFACTOR .  (reduce by rule 28)
+
+
+
+	.	reduce by rule 28
+
+
+state 62:
+
+	CMD : IF BEXP THEN . CMDSEQ ELSE CMDSEQ ENDIF 
+
+	LBRACE	shift 10
+
+	CMDSEQ	goto 79
+
+	.	error
+
+
+state 63:
+
+	DEC : VAR VARLIST COLON TYPE TERM .  (reduce by rule 5)
+
+
+
+	.	reduce by rule 5
+
+
+state 64:
+
+	BTERM : BTERM AND BFACTOR .  (reduce by rule 31)
+
+
+
+	.	reduce by rule 31
+
+
+state 65:
+
+	BEXP : BEXP OR BTERM .  (reduce by rule 29)
+	BTERM : BTERM . AND BFACTOR 
+
+	AND	shift 45
+
+
+	.	reduce by rule 29
+
+
+state 66:
+
+	CMD : WHILE BEXP DO CMDSEQ . ENDWH 
+
+	ENDWH	shift 80
+
+
+	.	error
+
+
+state 67:
+
+	IEXP : IEXP . PLUS ITERM 
+	IEXP : IEXP . MINUS ITERM 
+	BFACTOR : IEXP GEQ IEXP .  (reduce by rule 40)
+
+	PLUS	shift 55
+	MINUS	shift 54
+
+
+	.	reduce by rule 40
+
+
+state 68:
+
+	IEXP : IEXP . PLUS ITERM 
+	IEXP : IEXP . MINUS ITERM 
+	BFACTOR : IEXP GT IEXP .  (reduce by rule 39)
+
+	PLUS	shift 55
+	MINUS	shift 54
+
+
+	.	reduce by rule 39
+
+
+state 69:
+
+	IEXP : IEXP . PLUS ITERM 
+	IEXP : IEXP . MINUS ITERM 
+	BFACTOR : IEXP EQ IEXP .  (reduce by rule 38)
+
+	PLUS	shift 55
+	MINUS	shift 54
+
+
+	.	reduce by rule 38
+
+
+state 70:
+
+	IEXP : IEXP . PLUS ITERM 
+	IEXP : IEXP . MINUS ITERM 
+	BFACTOR : IEXP LEQ IEXP .  (reduce by rule 37)
+
+	PLUS	shift 55
+	MINUS	shift 54
+
+
+	.	reduce by rule 37
+
+
+state 71:
+
+	IEXP : IEXP . PLUS ITERM 
+	IEXP : IEXP . MINUS ITERM 
+	BFACTOR : IEXP LT IEXP .  (reduce by rule 36)
+
+	PLUS	shift 55
+	MINUS	shift 54
+
+
+	.	reduce by rule 36
+
+
+state 72:
+
+	IEXP : IEXP . PLUS ITERM 
+	IEXP : IEXP . MINUS ITERM 
+	BFACTOR : IEXP NEQ IEXP .  (reduce by rule 41)
+
+	PLUS	shift 55
+	MINUS	shift 54
+
+
+	.	reduce by rule 41
+
+
+state 73:
+
+	ITERM : ITERM . TIMES IFACTOR 
+	ITERM : ITERM . DIV IFACTOR 
+	ITERM : ITERM . MOD IFACTOR 
+	IEXP : IEXP MINUS ITERM .  (reduce by rule 19)
+
+	TIMES	shift 58
+	DIV	shift 57
+	MOD	shift 56
+
+
+	.	reduce by rule 19
+
+
+state 74:
+
+	ITERM : ITERM . TIMES IFACTOR 
+	ITERM : ITERM . DIV IFACTOR 
+	ITERM : ITERM . MOD IFACTOR 
+	IEXP : IEXP PLUS ITERM .  (reduce by rule 18)
+
+	TIMES	shift 58
+	DIV	shift 57
+	MOD	shift 56
+
+
+	.	reduce by rule 18
+
+
+state 75:
+
+	ITERM : ITERM MOD IFACTOR .  (reduce by rule 23)
+
+
+
+	.	reduce by rule 23
+
+
+state 76:
+
+	ITERM : ITERM DIV IFACTOR .  (reduce by rule 22)
+
+
+
+	.	reduce by rule 22
+
+
+state 77:
+
+	ITERM : ITERM TIMES IFACTOR .  (reduce by rule 21)
+
+
+
+	.	reduce by rule 21
+
+
+state 78:
+
+	IFACTOR : LPAREN IEXP RPAREN .  (reduce by rule 27)
+
+
+
+	.	reduce by rule 27
+
+
+state 79:
+
+	CMD : IF BEXP THEN CMDSEQ . ELSE CMDSEQ ENDIF 
+
+	ELSE	shift 81
+
+
+	.	error
+
+
+state 80:
+
+	CMD : WHILE BEXP DO CMDSEQ ENDWH .  (reduce by rule 15)
+
+
+
+	.	reduce by rule 15
+
+
+state 81:
+
+	CMD : IF BEXP THEN CMDSEQ ELSE . CMDSEQ ENDIF 
+
+	LBRACE	shift 10
+
+	CMDSEQ	goto 82
+
+	.	error
+
+
+state 82:
+
+	CMD : IF BEXP THEN CMDSEQ ELSE CMDSEQ . ENDIF 
+
+	ENDIF	shift 83
+
+
+	.	error
+
+
+state 83:
+
+	CMD : IF BEXP THEN CMDSEQ ELSE CMDSEQ ENDIF .  (reduce by rule 14)
+
+
+
+	.	reduce by rule 14
+
+
+state 84:
+
+
+	EOF	accept
+
+
+	.	error
+
+94 of 259 action table entries left after compaction
+75 goto table entries

@@ -1,14 +1,12 @@
 
-
-
 %%
 
 %name while
 
 %term 
-  NEGATE | TERM | DCOLON | COLON | SET | COMMA | LBRACE | RBRACE | LPAREN | RPAREN | PLUS | MINUS | TIMES | DIV | MOD | PROG | VAR | INT | BOOL | IF | THEN | ENDIF | ELSE | WHILE | DO | ENDWH | TT | FF | NOT | AND | OR | NEQ | LT | LEQ | EQ | GT | GEQ | ID of string | NUM of int | EOF
+  NEGATE | TERM | DCOLON | COLON | SET | COMMA | LBRACE | RBRACE | LPAREN | RPAREN | PLUS | MINUS | TIMES | DIV | MOD | PROG | VAR | INT | BOOL | READ | WRITE | IF | THEN | ENDIF | ELSE | WHILE | DO | ENDWH | TT | FF | NOT | AND | OR | NEQ | LT | LEQ | EQ | GT | GEQ | ID of string | NUM of int | EOF
 
-%nonterm START of AST.PROG | BLK of AST.BLK | DEC of AST.DEC | CMDSEQ of AST.CMDSEQ | TYPE of AST.TYP | VARLIST of AST.IDSEQ | EXP of AST.EXP | CMDWRAP of AST.CMDWRAP | DECWRAP of AST.DECWRAP | DECSEQ of AST.DECSEQ
+%nonterm START of AST.PROG | BLK of AST.BLK | DEC of AST.DEC | CMDSEQ of AST.CMDSEQ | TYPE of AST.TYP | VARLIST of AST.IDSEQ | EXP of AST.EXP | CMDWRAP of AST.CMDWRAP | DECWRAP of AST.DECWRAP | DECSEQ of AST.DECSEQ | CMD of AST.CMD
 
 %noshift EOF
 %eop EOF
@@ -49,12 +47,15 @@ TYPE: INT                                   (AST.INT)
 
 CMDSEQ: LBRACE CMDWRAP RBRACE               (AST.CMDSEQ(CMDWRAP))
 CMDWRAP: (*epsilon*)                        ([]) 
-    | EXP TERM CMDWRAP                      (AST.cmdAdd(EXP, CMDWRAP))
+    | CMD TERM CMDWRAP                      (AST.cmdAdd(CMD, CMDWRAP))
 
-EXP: ID SET EXP                             (AST.SET(ID, EXP))
-    | IF EXP THEN CMDSEQ ELSE CMDSEQ ENDIF  (AST.ITE(EXP, CMDSEQ1, CMDSEQ2))
+CMD: ID SET EXP                             (AST.SET(ID, EXP))
+    | READ ID                               (AST.READ(ID))
+    | WRITE EXP                             (AST.WRITE(EXP))
+    | IF EXP THEN CMDSEQ ELSE CMDSEQ ENDIF  (AST.ITE(EXP, CMDSEQ, CMDSEQ))
     | WHILE EXP DO CMDSEQ ENDWH             (AST.WH(EXP, CMDSEQ))
-    | EXP PLUS  EXP                         (AST.PLUS(EXP1, EXP2))
+
+EXP:  EXP PLUS  EXP                         (AST.PLUS(EXP1, EXP2))
     | EXP MINUS EXP                         (AST.MINUS(EXP1, EXP2))
     | EXP TIMES EXP                         (AST.TIMES(EXP1, EXP2))
     | EXP DIV EXP                           (AST.DIV(EXP1, EXP2))

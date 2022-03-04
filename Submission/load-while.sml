@@ -1,4 +1,5 @@
-exception syntaxErr
+(* open EVALUATOR *)
+exception syntaxError
 structure whileLrVals = whileLrValsFun(structure Token = LrParser.Token)
 structure whileLex = whileLexFun(structure Tokens = whileLrVals.Tokens);
 structure whileParser =
@@ -8,7 +9,7 @@ structure whileParser =
      
 fun invoke lexstream =
     	     	let fun print_error (s,pos:int,_) =
-		    	( TextIO.output(TextIO.stdOut, "Syntax Error:"^Int.toString(pos)^":"^Int.toString(pos)^":"^s) ; raise syntaxErr )
+		    	( TextIO.output(TextIO.stdOut, "Syntax Error:"^Int.toString(pos)^":"^Int.toString(pos)^":"^s) ; raise syntaxError )
 		in
 		    whileParser.parse(0,lexstream,print_error,())
 		end
@@ -42,3 +43,10 @@ fun read (infile:string) =
 
 val parseString = parse o stringToLexer 
 val parseFile = parse o stringToLexer o read 
+
+(* fun typeCheckFile fileName = 
+	let 
+		val parseTree = parseFile fileName
+	in
+		checkFile (parseTree, [])
+	end *)
